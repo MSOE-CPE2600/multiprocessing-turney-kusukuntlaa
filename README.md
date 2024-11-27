@@ -9,6 +9,6 @@ Child Processes	  Runtime (s)
 10	               220.8
 20	               216.8
 
-![Screenshot](CPE2600 RuntimesLab11.png)
+![Screenshot](CPE2600RuntimesLab11.png)
 
 c. My results for my runtimes were from using the time ./mandelmovie -n (# of Child Processes). I used the user time to get as accurate results possible. As seen by the table and graph, I see that as the number of child processes increases, the runtime is larger since the the fork would split the frames up for each process. The rate would be by the frames/child process. An example would be if there are 10 processes and 50 frames, the runtime is larger since the amount of processes at each frame is 50/10 which is a total of 5 child processes with each one of them being at 10 frames. 
