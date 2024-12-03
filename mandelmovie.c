@@ -13,15 +13,20 @@
 #include <math.h>
 #include <string.h>
 #include <semaphore.h>
-#include <fcntl.h>
 #include <sys/wait.h>
 #include <stdbool.h>
 #include <time.h>
+#include <mqueue.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <pthread.h>
 
 #define MAX 1000
 void help();
 void generate_image(char *name, double x, double y, double scale, int width, int height);
 void runtime(int num, int frame, int width, int height, char *dictionary);
+void compute_image(struct bitmap *bm, double xmin, double xmax, double ymin, double ymax, int max);
+void *compute(void *x);
 //my main would process the command line of choices using getopt. 
 int main(int argc, char *argv[]){
     int num = 4;
@@ -30,7 +35,9 @@ int main(int argc, char *argv[]){
     int height = 1000;
     char *directory = ".";
     char choice;
-    while((choice = getopt(argc, argv, "n:f:w:h:o:H")) != -1){
+    int thread = 1;
+    pthread_t threading;
+    while((choice = getopt(argc, argv, "n:f:w:h:o:t:H")) != -1){
         switch(choice){
             case 'n':
                 num = atoi(optarg);
@@ -47,13 +54,15 @@ int main(int argc, char *argv[]){
             case 'o':
                 directory = optarg;
                 break;
+            case 't':
+                thread = atoi(optarg);
             case 'H':
                 help();
                 exit(1);
         }
-
     }
-
+    pthread_create(&threading, NULL, &compute, &thread);
+    pthread_join(threading, NULL);
     printf("frames: %d\n", frame);
     printf("Number of children: %d\n", num);
     printf("Image size: %d x %d\n", width, height);
@@ -173,6 +182,28 @@ void runtime(int num, int frame, int width, int height, char *dictionary){
     while(wait(NULL) > 0);
     sem_close(st);
     sem_unlink("/mandel_semaphore");
-    
-    
+}
+
+void compute_image(struct bitmap *bm, double xmin, double xmax, double ymin, double ymax, int max){
+    int i, j;
+
+    int width = bitmap_width(bm);
+    int height = bitmap_height(bm);
+
+    for(j = 0; j < height; j++){
+        for(i = 0; i < width; i++){
+            double x = xmin + i * (xmax - xmin)/width;
+            double y = ymin + j * (ymax - ymin)/height;
+
+            int iters = iterations_at_point(x, y, max);
+
+            bitmap_set(bm, i, j, iters);
+        }
+    }
+}
+
+void *compute(void *x){
+    int value = *(int*)x
+    printf("Thread is running with the value %d\n", value);
+    return NULL;
 }
