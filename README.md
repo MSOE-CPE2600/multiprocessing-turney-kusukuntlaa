@@ -25,4 +25,5 @@ b.
 
 c. 
     i. The technique that seemed to impact the runtime more was the multitreading as seen by the table. I think that the multithreading impacted the runtime more because the treads seemed to work more efficiently by splitting the tasks into different workloads. Multiprocessing seemed to be less impactful since there would be a process going to multiple of the 50 frames desired which would make less of a decrease in runtime. 
+    
     ii. There is a sweet spot where minimal runtime is achieved. The minimal runtime according to my table is at 16 threads and 16 processes since that is the lowest runtime. It seems that the sweet spot is when it is a maximal amount of threads. 
